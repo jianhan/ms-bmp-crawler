@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
+	"github.com/jianhan/ms-bmp-crawler/crawlers"
 	cfgreader "github.com/jianhan/pkg/configs"
 	"github.com/micro/go-micro"
 	"github.com/spf13/viper"
@@ -26,6 +28,11 @@ func main() {
 
 	// init service
 	srv.Init()
+
+	umart := crawlers.NewUmart(true)
+	umart.Scrape()
+	spew.Dump(umart.Products())
+
 }
 
 func init() {

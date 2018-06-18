@@ -18,7 +18,7 @@ func NewMegabuyau(testMode bool) Scraper {
 		homepageURL: "https://www.megabuy.com.au",
 		name:        "Megabuy Australia",
 		categoryURL: "https://www.megabuy.com.au/computer-components-c1160.html",
-		currency:    "CAD",
+		currency:    "AUD",
 		testMode:    testMode,
 	}
 

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/jianhan/ms-bmp-crawler/crawlers"
 	cfgreader "github.com/jianhan/pkg/configs"
 	"github.com/micro/go-micro"
@@ -32,10 +31,12 @@ func main() {
 	//umart := crawlers.NewUmart(true)
 	//umart.Scrape()
 
-	megabuyau := crawlers.NewMegabuyau(true)
-	megabuyau.Scrape()
-	spew.Dump(megabuyau.Products())
+	//megabuyau := crawlers.NewMegabuyau(true)
+	//megabuyau.Scrape()
+	//spew.Dump(megabuyau.Products())
 
+	mwaveau := crawlers.NewMwaveau(true)
+	mwaveau.Scrape()
 }
 
 func init() {

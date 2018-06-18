@@ -29,9 +29,12 @@ func main() {
 	// init service
 	srv.Init()
 
-	umart := crawlers.NewUmart(true)
-	umart.Scrape()
-	spew.Dump(umart.Products())
+	//umart := crawlers.NewUmart(true)
+	//umart.Scrape()
+
+	megabuyau := crawlers.NewMegabuyau(true)
+	megabuyau.Scrape()
+	spew.Dump(megabuyau.Products())
 
 }
 

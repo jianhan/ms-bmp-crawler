@@ -6,9 +6,11 @@ import (
 
 	"context"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/jianhan/ms-bmp-crawler/crawlers"
+	"github.com/jianhan/ms-bmp-crawler/outputs"
 	pcategories "github.com/jianhan/ms-bmp-products/proto/categories"
+	pproducts "github.com/jianhan/ms-bmp-products/proto/products"
+	psuppliers "github.com/jianhan/ms-bmp-products/proto/suppliers"
 	cfgreader "github.com/jianhan/pkg/configs"
 	"github.com/micro/go-micro"
 	"github.com/spf13/viper"
@@ -33,23 +35,18 @@ func main() {
 	srv.Init()
 
 	umart := crawlers.NewUmart(true)
-	umart.Scrape()
-	categoriesClient := pcategories.NewCategoriesServiceClient("", nil)
-
-	categoriesRsp, _ := categoriesClient.Categories(context.Background(), &pcategories.CategoriesReq{})
-	umartCategories := umart.Categories()
-	for _, v := range categoriesRsp.Categories {
-		for k := range umartCategories {
-			if umartCategories[k].Url == v.Url {
-				umartCategories[k].ID = v.ID
-			}
-		}
-	}
-	rsp, err := categoriesClient.UpsertCategories(context.Background(), &pcategories.UpsertCategoriesReq{Categories: umartCategories})
+	err = umart.Scrape()
 	if err != nil {
 		panic(err)
 	}
-	spew.Dump(rsp)
+	serviceOutput := outputs.NewService(
+		pcategories.NewCategoriesServiceClient("", nil),
+		pproducts.NewProductsServiceClient("", nil),
+		psuppliers.NewSuppliersServiceClient("", nil),
+	)
+	if err := serviceOutput.Output(context.Background(), umart); err != nil {
+		panic(err)
+	}
 
 	//megabuyau := crawlers.NewMegabuyau(true)
 	//megabuyau.Scrape()

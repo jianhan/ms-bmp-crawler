@@ -1,7 +1,11 @@
 package outputs
 
-import "github.com/jianhan/ms-bmp-crawler/crawlers"
+import (
+	"context"
+
+	"github.com/jianhan/ms-bmp-crawler/crawlers"
+)
 
 type OutputWriter interface {
-	Output(crawler crawlers.Crawler) error
+	Output(ctx context.Context, crawler crawlers.Crawler) error
 }

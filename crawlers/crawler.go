@@ -5,7 +5,7 @@ import (
 	pproducts "github.com/jianhan/ms-bmp-products/proto/products"
 )
 
-type Scraper interface {
+type Crawler interface {
 	Name() string
 	Scrape() error
 	Categories() []*pcategories.Category

@@ -13,7 +13,7 @@ type megabuyau struct {
 	base
 }
 
-func NewMegabuyau(testMode bool) Scraper {
+func NewMegabuyau(testMode bool) Crawler {
 	b := base{
 		homepageURL: "https://www.megabuy.com.au",
 		name:        "Megabuy Australia",

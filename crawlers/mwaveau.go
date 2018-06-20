@@ -9,7 +9,7 @@ type mwaveau struct {
 	base
 }
 
-func NewMwaveau(testMode bool) Scraper {
+func NewMwaveau(testMode bool) Crawler {
 	// TODO: this one has async loading menu, can not do it for now
 	b := base{
 		homepageURL: "https://www.mwave.com.au/",

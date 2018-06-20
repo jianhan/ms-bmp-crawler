@@ -11,7 +11,7 @@ type umart struct {
 	base
 }
 
-func NewUmart(testMode bool) Scraper {
+func NewUmart(testMode bool) Crawler {
 	b := base{
 		name:        "Umart",
 		categoryURL: "https://www.umart.com.au/all-categories.html",

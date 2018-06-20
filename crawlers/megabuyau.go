@@ -6,6 +6,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	pcategories "github.com/jianhan/ms-bmp-products/proto/categories"
 	pproducts "github.com/jianhan/ms-bmp-products/proto/products"
+	psuppliers "github.com/jianhan/ms-bmp-products/proto/suppliers"
 	"github.com/sirupsen/logrus"
 )
 
@@ -123,4 +124,13 @@ func (m *megabuyau) fetchProductsByURL(url, categoryURL string) error {
 	})
 
 	return nil
+}
+
+func (m *megabuyau) Supplier() *psuppliers.Supplier {
+	return &psuppliers.Supplier{
+		Name:        m.name,
+		LogoUrl:     "https://www.megabuy.com.au/images/megabuy-online-computer-store.jpg",
+		HomePageUrl: m.homepageURL,
+		Currency:    "AUD",
+	}
 }

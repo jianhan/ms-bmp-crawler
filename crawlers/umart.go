@@ -4,6 +4,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	pcategories "github.com/jianhan/ms-bmp-products/proto/categories"
 	pproducts "github.com/jianhan/ms-bmp-products/proto/products"
+	psuppliers "github.com/jianhan/ms-bmp-products/proto/suppliers"
 	"github.com/sirupsen/logrus"
 )
 
@@ -125,4 +126,13 @@ func (u *umart) fetchProductsByURL(url, categoryURL string) error {
 	}
 
 	return nil
+}
+
+func (u *umart) Supplier() *psuppliers.Supplier {
+	return &psuppliers.Supplier{
+		Name:        u.name,
+		LogoUrl:     "https://assets.umart.com.au/themes/umart2018/images/logo_lg.png",
+		HomePageUrl: u.homepageURL,
+		Currency:    "AUD",
+	}
 }

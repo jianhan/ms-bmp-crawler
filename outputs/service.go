@@ -43,6 +43,12 @@ func (o *service) Output(ctx context.Context, crawler crawlers.Crawler) error {
 	if err := o.syncCategories(ctx, categories); err != nil {
 		return err
 	}
+	if err := o.syncProducts(ctx, products); err != nil {
+		return err
+	}
+	if err := o.syncSupplier(ctx, crawler.Supplier()); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -97,7 +103,7 @@ func (o *service) syncProducts(ctx context.Context, products []*pproducts.Produc
 	return nil
 }
 
-func (o *service) syncSupplier(ctx context.Context, suppliers []*psuppliers.Supplier) error {
+func (o *service) syncSupplier(ctx context.Context, supplier *psuppliers.Supplier) error {
 	// get existing
 	rsp, err := o.suppliersServiceClient.Suppliers(ctx, &psuppliers.SuppliersReq{})
 	if err != nil {
@@ -105,16 +111,14 @@ func (o *service) syncSupplier(ctx context.Context, suppliers []*psuppliers.Supp
 	}
 
 	// assign IDs
-	for _, v := range rsp.Suppliers {
-		for k := range suppliers {
-			if suppliers[k].HomePageUrl == v.HomePageUrl {
-				suppliers[k].ID = v.ID
-			}
+	for k := range rsp.Suppliers {
+		if supplier.HomePageUrl == rsp.Suppliers[k].HomePageUrl {
+			supplier.ID = rsp.Suppliers[k].ID
 		}
 	}
 
 	// update via RPC
-	_, err = o.suppliersServiceClient.UpsertSuppliers(ctx, &psuppliers.UpsertSuppliersReq{Suppliers: suppliers})
+	_, err = o.suppliersServiceClient.UpsertSuppliers(ctx, &psuppliers.UpsertSuppliersReq{Suppliers: []*psuppliers.Supplier{supplier}})
 	if err != nil {
 		return err
 	}

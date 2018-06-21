@@ -34,23 +34,33 @@ func main() {
 	// init service
 	srv.Init()
 
-	umart := crawlers.NewUmart(true)
-	err = umart.Scrape()
-	if err != nil {
-		panic(err)
-	}
+	// initialize output
 	serviceOutput := outputs.NewService(
 		pcategories.NewCategoriesServiceClient("", nil),
 		pproducts.NewProductsServiceClient("", nil),
 		psuppliers.NewSuppliersServiceClient("", nil),
 	)
+
+	// crawl umart
+	umart := crawlers.NewUmart(true)
+	err = umart.Scrape()
+	if err != nil {
+		panic(err)
+	}
+
+	// output to service
 	if err := serviceOutput.Output(context.Background(), umart); err != nil {
 		panic(err)
 	}
 
-	//megabuyau := crawlers.NewMegabuyau(true)
-	//megabuyau.Scrape()
-	//spew.Dump(megabuyau.Products())
+	// crawl megabuy
+	megabuyau := crawlers.NewMegabuyau(true)
+	megabuyau.Scrape()
+
+	// output to service
+	if err := serviceOutput.Output(context.Background(), megabuyau); err != nil {
+		panic(err)
+	}
 
 }
 

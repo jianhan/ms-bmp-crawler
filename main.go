@@ -6,6 +6,8 @@ import (
 
 	"context"
 
+	"sync"
+
 	"github.com/jianhan/ms-bmp-crawler/crawlers"
 	"github.com/jianhan/ms-bmp-crawler/outputs"
 	pcategories "github.com/jianhan/ms-bmp-products/proto/categories"
@@ -13,6 +15,7 @@ import (
 	psuppliers "github.com/jianhan/ms-bmp-products/proto/suppliers"
 	cfgreader "github.com/jianhan/pkg/configs"
 	"github.com/micro/go-micro"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -41,21 +44,33 @@ func main() {
 		psuppliers.NewSuppliersServiceClient("", nil),
 	)
 
+	wg := sync.WaitGroup{}
+	wg.Add(2)
 	// crawl umart
-	umart := crawlers.NewUmart(true)
-	err = umart.Scrape()
-	if err != nil {
-		panic(err)
-	}
+	umart := crawlers.NewUmart(false)
+	go func() {
+		if err := umart.Scrape(); err != nil {
+			wg.Done()
+			panic(err)
+		}
+		wg.Done()
+	}()
+
+	megabuyau := crawlers.NewMegabuyau(false)
+	go func() {
+		// crawl megabuy
+		if err := megabuyau.Scrape(); err != nil {
+			wg.Done()
+			panic(err)
+		}
+	}()
+	logrus.Info("Finish all scraping")
+	wg.Wait()
 
 	// output to service
 	if err := serviceOutput.Output(context.Background(), umart); err != nil {
 		panic(err)
 	}
-
-	// crawl megabuy
-	megabuyau := crawlers.NewMegabuyau(true)
-	megabuyau.Scrape()
 
 	// output to service
 	if err := serviceOutput.Output(context.Background(), megabuyau); err != nil {

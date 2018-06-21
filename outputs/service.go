@@ -63,7 +63,7 @@ func (o *service) syncCategories(ctx context.Context, categories []*pcategories.
 	// assign IDs
 	for _, v := range rsp.Categories {
 		for k := range categories {
-			if categories[k].Url == v.Url {
+			if categories[k].Url == v.Url || categories[k].Name == v.Name {
 				categories[k].ID = v.ID
 			}
 		}
@@ -88,7 +88,7 @@ func (o *service) syncProducts(ctx context.Context, products []*pproducts.Produc
 	// assign IDs
 	for _, v := range rsp.Products {
 		for k := range products {
-			if products[k].Url == v.Url {
+			if products[k].Url == v.Url || products[k].Name == v.Name {
 				products[k].ID = v.ID
 			}
 		}
@@ -112,7 +112,7 @@ func (o *service) syncSupplier(ctx context.Context, supplier *psuppliers.Supplie
 
 	// assign IDs
 	for k := range rsp.Suppliers {
-		if supplier.HomePageUrl == rsp.Suppliers[k].HomePageUrl {
+		if supplier.HomePageUrl == rsp.Suppliers[k].HomePageUrl || supplier.Name == rsp.Suppliers[k].Name {
 			supplier.ID = rsp.Suppliers[k].ID
 		}
 	}

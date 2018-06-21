@@ -94,6 +94,9 @@ func (m *megabuyau) fetchProductsByURL(url, categoryURL string) error {
 		// find name
 		s.Find("div.nameDescription > a").First().Each(func(ni int, ns *goquery.Selection) {
 			p.Name = ns.Text()
+			if url, exists := ns.Attr("href"); exists {
+				p.Url = url
+			}
 		})
 
 		// find price

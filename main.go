@@ -63,19 +63,32 @@ func main() {
 			wg.Done()
 			panic(err)
 		}
+		wg.Done()
 	}()
+
 	logrus.Info("Finish all scraping")
 	wg.Wait()
 
-	// output to service
-	if err := serviceOutput.Output(context.Background(), umart); err != nil {
-		panic(err)
-	}
+	outputWg := sync.WaitGroup{}
+	outputWg.Add(2)
+	go func() {
+		// output to service
+		if err := serviceOutput.Output(context.Background(), umart); err != nil {
+			outputWg.Done()
+			panic(err)
+		}
+		outputWg.Done()
+	}()
 
-	// output to service
-	if err := serviceOutput.Output(context.Background(), megabuyau); err != nil {
-		panic(err)
-	}
+	go func() {
+		// output to service
+		if err := serviceOutput.Output(context.Background(), megabuyau); err != nil {
+			outputWg.Done()
+			panic(err)
+		}
+		outputWg.Done()
+	}()
+	outputWg.Wait()
 
 }
 

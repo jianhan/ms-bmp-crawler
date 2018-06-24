@@ -1,6 +1,6 @@
 service:
   name: go.micro.srv.crawler
-  register_ttl: 30
+  register_ttl: 1200
   register_interval: 10
   version: 1.0.0
   metadata:

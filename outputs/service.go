@@ -33,20 +33,15 @@ func (o *service) Output(ctx context.Context, crawler crawlers.Crawler) error {
 		return fmt.Errorf("empty products when output to service with %s", crawler.Name())
 	}
 
-	// get suppliers from crawler
-	suppliers := crawler.Products()
-	if len(suppliers) == 0 {
-		return fmt.Errorf("empty suppliers when output to service with %s", crawler.Name())
-	}
-
 	// start syncing
+	if err := o.syncSupplier(ctx, crawler.Supplier()); err != nil {
+		return err
+	}
 	if err := o.syncCategories(ctx, categories); err != nil {
 		return err
 	}
+
 	if err := o.syncProducts(ctx, products); err != nil {
-		return err
-	}
-	if err := o.syncSupplier(ctx, crawler.Supplier()); err != nil {
 		return err
 	}
 
@@ -94,8 +89,9 @@ func (o *service) syncProducts(ctx context.Context, products []*pproducts.Produc
 		}
 	}
 
+	filterdProducts := removeDuplicatesByName(products)
 	// update via RPC
-	_, err = o.productsServiceClient.UpsertProducts(ctx, &pproducts.UpsertProductsReq{Products: products})
+	_, err = o.productsServiceClient.UpsertProducts(ctx, &pproducts.UpsertProductsReq{Products: filterdProducts})
 	if err != nil {
 		return err
 	}
@@ -124,4 +120,22 @@ func (o *service) syncSupplier(ctx context.Context, supplier *psuppliers.Supplie
 	}
 
 	return nil
+}
+
+func removeDuplicatesByName(products []*pproducts.Product) []*pproducts.Product {
+	encountered := map[string]bool{}
+	result := []*pproducts.Product{}
+
+	for v := range products {
+		if encountered[products[v].Name] {
+			// Do not add duplicate.
+		} else {
+			// Record this element as an encountered element.
+			encountered[products[v].Name] = true
+			// Append to result slice.
+			result = append(result, products[v])
+		}
+	}
+	// Return the new slice.
+	return result
 }

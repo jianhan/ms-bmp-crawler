@@ -55,7 +55,7 @@ func (u *umart) fetchCategories() error {
 
 func (u *umart) fetchProducts() error {
 	for _, c := range u.categories {
-		if err := u.fetchProductsByURL(c.Url, u.categoryURL); err != nil {
+		if err := u.fetchProductsByURL(c.Url, c.Url); err != nil {
 			return err
 		}
 
